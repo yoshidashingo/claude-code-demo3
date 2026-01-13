@@ -1,0 +1,134 @@
+[
+  {
+    "id": "1",
+    "name": "オーガニックコットンTシャツ",
+    "description": "肌触りの良いオーガニックコットン100%のベーシックTシャツ。シンプルなデザインで様々なコーディネートに合わせやすい一枚です。",
+    "price": 4980,
+    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
+    "category": "clothing",
+    "stock": 50,
+    "rating": 4.5,
+    "reviews": 128
+  },
+  {
+    "id": "2",
+    "name": "デニムジャケット",
+    "description": "クラシックなデザインのデニムジャケット。程よいウォッシュ加工でこなれた雰囲気を演出します。",
+    "price": 12800,
+    "image": "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400",
+    "category": "clothing",
+    "stock": 25,
+    "rating": 4.7,
+    "reviews": 89
+  },
+  {
+    "id": "3",
+    "name": "レザーベルト",
+    "description": "上質な本革を使用したシンプルなベルト。ビジネスからカジュアルまで幅広く使えます。",
+    "price": 6500,
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
+    "category": "accessories",
+    "stock": 100,
+    "rating": 4.3,
+    "reviews": 56
+  },
+  {
+    "id": "4",
+    "name": "キャンバススニーカー",
+    "description": "軽量で履き心地の良いキャンバス素材のスニーカー。シンプルなホワイトカラーでどんなスタイルにもマッチ。",
+    "price": 7980,
+    "image": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400",
+    "category": "shoes",
+    "stock": 40,
+    "rating": 4.6,
+    "reviews": 203
+  },
+  {
+    "id": "5",
+    "name": "トートバッグ",
+    "description": "大容量のキャンバストートバッグ。A4サイズも楽々収納でき、通勤・通学に最適です。",
+    "price": 5500,
+    "image": "https://images.unsplash.com/photo-1544816155-12df9643f363?w=400",
+    "category": "bags",
+    "stock": 60,
+    "rating": 4.4,
+    "reviews": 167
+  },
+  {
+    "id": "6",
+    "name": "ニットセーター",
+    "description": "柔らかなウール混紡素材のニットセーター。程よい厚みで秋冬の重ね着に活躍します。",
+    "price": 8900,
+    "image": "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400",
+    "category": "clothing",
+    "stock": 35,
+    "rating": 4.8,
+    "reviews": 94
+  },
+  {
+    "id": "7",
+    "name": "サングラス",
+    "description": "UV400カットのスタイリッシュなサングラス。軽量フレームで長時間の着用も快適。",
+    "price": 4200,
+    "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400",
+    "category": "accessories",
+    "stock": 80,
+    "rating": 4.2,
+    "reviews": 142
+  },
+  {
+    "id": "8",
+    "name": "レザーブーツ",
+    "description": "本革使用の上品なアンクルブーツ。クッション性のあるインソールで歩きやすさも抜群。",
+    "price": 18500,
+    "image": "https://images.unsplash.com/photo-1542840843-3349799cded6?w=400",
+    "category": "shoes",
+    "stock": 20,
+    "rating": 4.9,
+    "reviews": 78
+  },
+  {
+    "id": "9",
+    "name": "バックパック",
+    "description": "防水素材を使用した機能的なバックパック。PCポケット付きでビジネスユースにも対応。",
+    "price": 12000,
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
+    "category": "bags",
+    "stock": 45,
+    "rating": 4.6,
+    "reviews": 189
+  },
+  {
+    "id": "10",
+    "name": "リネンシャツ",
+    "description": "通気性抜群のリネン素材シャツ。夏場でも涼しく過ごせる一枚です。",
+    "price": 7500,
+    "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400",
+    "category": "clothing",
+    "stock": 30,
+    "rating": 4.4,
+    "reviews": 112
+  },
+  {
+    "id": "11",
+    "name": "腕時計",
+    "description": "シンプルで洗練されたデザインの腕時計。ビジネスシーンにもカジュアルにも対応。",
+    "price": 15800,
+    "image": "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400",
+    "category": "accessories",
+    "stock": 25,
+    "rating": 4.7,
+    "reviews": 201
+  },
+  {
+    "id": "12",
+    "name": "ランニングシューズ",
+    "description": "軽量でクッション性に優れたランニングシューズ。日常使いからトレーニングまで。",
+    "price": 11000,
+    "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
+    "category": "shoes",
+    "stock": 55,
+    "rating": 4.5,
+    "reviews": 234
+  }
+]
