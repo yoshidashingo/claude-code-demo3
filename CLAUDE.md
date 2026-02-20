@@ -1,45 +1,11 @@
-# ECサイト - 開発標準ルール
+# CLAUDE.md (プロジェクトメモリ)
 
 ## 概要
-本ドキュメントは、ECサイトの開発を進める際に必ず参照し、遵守すべき標準ルールを定義します。
+開発を進めるうえで遵守すべき標準ルールを定義します。
 
 ## プロジェクト構造
 
 本リポジトリは、タスク管理アプリケーション専用のリポジトリです。
-
-### ディレクトリ構造
-
-```
-claude-code-demo/                     # リポジトリルート
-├── CLAUDE.md                         # 本ファイル（開発標準ルール）
-├── README.md                         # プロジェクト説明
-├── docs/                             # 永続的ドキュメント
-│   ├── product-requirements.md       # プロダクト要求定義書
-│   ├── functional-design.md          # 機能設計書
-│   ├── architecture.md               # 技術仕様書
-│   ├── repository-structure.md       # リポジトリ構造定義書
-│   ├── development-guidelines.md     # 開発ガイドライン
-│   └── glossary.md                   # ユビキタス言語定義
-├── .steering/                        # 作業単位のステアリングファイル
-│   └── [YYYYMMDD]-[開発タイトル]/
-│       ├── requirements.md           # 今回の作業の要求内容
-│       ├── design.md                 # 変更内容の設計
-│       └── tasklist.md               # タスクリスト
-├── src/                              # ソースコード
-│   ├── components/                   # Reactコンポーネント
-│   ├── contexts/                     # Context API
-│   ├── hooks/                        # カスタムフック
-│   ├── types/                        # TypeScript型定義
-│   ├── utils/                        # ユーティリティ関数
-│   ├── constants/                    # 定数定義
-│   ├── App.tsx                       # メインコンポーネント
-│   └── main.tsx                      # エントリーポイント
-├── public/                           # 静的ファイル
-├── package.json                      # 依存関係
-├── tsconfig.json                     # TypeScript設定
-├── vite.config.ts                    # Vite設定
-└── ...                               # その他設定ファイル
-```
 
 ### ドキュメントの分類
 
@@ -166,26 +132,11 @@ mkdir -p .steering/[YYYYMMDD]-initial-implementation
 
 #### 4. 環境セットアップ
 
-```bash
-npm install
-```
-
-必要に応じてパッケージを追加：
-```bash
-npm install uuid date-fns
-npm install -D @types/uuid
-```
-
 #### 5. 実装開始
 
 `.steering/[YYYYMMDD]-initial-implementation/tasklist.md` に基づいて実装を進めます。
 
 #### 6. 品質チェック
-
-```bash
-npm run lint
-npx tsc --noEmit
-```
 
 ### 機能追加・修正時の手順
 
@@ -227,30 +178,6 @@ mkdir -p .steering/20250115-add-tag-feature
 `.steering/[YYYYMMDD]-[開発タイトル]/tasklist.md` に基づいて実装を進めます。
 
 #### 6. 品質チェック
-
-```bash
-npm run lint
-npx tsc --noEmit
-```
-
-## コマンド
-
-### 開発サーバー起動
-```bash
-npm run dev
-```
-
-### リント・型チェック
-開発完了時は以下のコマンドを実行してコードの品質を確認すること：
-```bash
-npm run lint          # コードスタイルのチェック
-npx tsc --noEmit      # TypeScriptの型チェック
-```
-
-### ビルド
-```bash
-npm run build
-```
 
 ## ドキュメント管理の原則
 

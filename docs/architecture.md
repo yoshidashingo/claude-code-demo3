@@ -3,91 +3,96 @@
 ## 1. テクノロジースタック
 
 ### 1.1 フロントエンド
-| カテゴリ | 技術 | バージョン |
-|----------|------|------------|
-| フレームワーク | React | 18.x |
-| 言語 | TypeScript | 5.x |
-| ビルドツール | Vite | 5.x |
-| スタイリング | Tailwind CSS | 3.x |
-| ルーティング | React Router | 6.x |
 
-### 1.2 状態管理
-- React Context API（グローバル状態）
-- useState / useReducer（ローカル状態）
+| カテゴリ | 技術 | バージョン | 用途 |
+|----------|------|------------|------|
+| UIライブラリ | React | 18.x | UIコンポーネント構築 |
+| 言語 | TypeScript | 5.x | 型安全な開発 |
+| ビルドツール | Vite | 5.x | 高速な開発サーバーとビルド |
+| スタイリング | Tailwind CSS | 3.x | ユーティリティファーストCSS |
+| ルーティング | React Router | 6.x | クライアントサイドルーティング |
+| ユーティリティ | uuid | 最新 | 一意なID生成 |
+| ユーティリティ | date-fns | 最新 | 日付フォーマット（将来利用） |
 
-### 1.3 ユーティリティ
-| ライブラリ | 用途 |
-|------------|------|
-| uuid | 一意なID生成 |
-| date-fns | 日付処理 |
+### 1.2 開発ツール
+
+| カテゴリ | 技術 | 用途 |
+|----------|------|------|
+| リンター | ESLint | コード品質チェック |
+| 型チェック | TypeScript Compiler | 型安全性の検証 |
+| パッケージ管理 | npm | 依存関係管理 |
+| バージョン管理 | Git | ソースコード管理 |
 
 ## 2. アーキテクチャパターン
 
-### 2.1 コンポーネント設計
-- **Presentational / Container パターン**
-  - UIコンポーネントはプレゼンテーション層
-  - ページコンポーネントがロジックを持つ
+### 2.1 コンポーネントパターン
 
-### 2.2 ディレクトリ構造
+**Presentational / Container パターン**を採用する。
+
+- **Presentational コンポーネント:** UIの表示に専念。Propsを受け取り描画する
+- **Container コンポーネント（ページ）:** データの取得・状態管理を担当
+
+### 2.2 状態管理パターン
+
+- **グローバル状態:** React Context API + useReducer
+  - CartContext: カート状態
+  - FavoritesContext: お気に入り状態
+- **ローカル状態:** useState
+  - カテゴリフィルターの選択状態
+  - UIの表示/非表示状態
+
+### 2.3 ディレクトリ構造
+
 ```
 src/
-├── components/    # 再利用可能なUIコンポーネント
-├── contexts/      # グローバル状態管理
-├── hooks/         # カスタムフック
-├── types/         # TypeScript型定義
-├── data/          # モックデータ
-├── pages/         # ページコンポーネント
-├── utils/         # ユーティリティ関数
-└── constants/     # 定数
+├── components/          # 再利用可能なUIコンポーネント
+│   ├── layout/          # レイアウト（Header, Footer）
+│   ├── product/         # 商品関連（ProductCard, ProductList, ProductDetail）
+│   ├── cart/            # カート関連（CartItem, CartItemList, CartSummary）
+│   └── favorites/       # お気に入り関連（FavoriteList）
+├── contexts/            # Context API
+│   ├── CartContext.tsx
+│   └── FavoritesContext.tsx
+├── data/                # モックデータ
+│   └── products.ts
+├── hooks/               # カスタムフック（必要に応じて）
+├── pages/               # ページコンポーネント
+│   ├── HomePage.tsx
+│   ├── ProductDetailPage.tsx
+│   ├── CartPage.tsx
+│   └── FavoritesPage.tsx
+├── types/               # TypeScript型定義
+│   └── index.ts
+├── utils/               # ユーティリティ関数
+│   └── format.ts        # 価格フォーマットなど
+├── constants/           # 定数定義
+│   └── categories.ts
+├── App.tsx              # メインコンポーネント（ルーティング設定）
+└── main.tsx             # エントリーポイント
 ```
 
-## 3. 開発環境
+## 3. 技術的制約
 
-### 3.1 Node.js
-- バージョン: 18.x 以上
+### 3.1 フロントエンドのみ
+- バックエンドAPIは使用しない
+- データはモックデータとしてTypeScriptファイルに定義
+- 状態はメモリ上で管理（ブラウザリロードでリセット）
 
-### 3.2 パッケージマネージャー
-- npm
+### 3.2 ブラウザ対応
+- Chrome、Firefox、Safari、Edgeの最新版
+- ES2020以降の構文を使用
 
-### 3.3 開発サーバー
-- Vite開発サーバー（HMR対応）
-- ポート: 5173（デフォルト）
+## 4. パフォーマンス要件
 
-## 4. ビルド設定
+| 指標 | 目標値 |
+|------|--------|
+| 初回ページ読み込み | 3秒以内 |
+| ページ遷移 | 即時（SPA） |
+| UI操作レスポンス | 100ms以内 |
+| バンドルサイズ | 500KB以内（gzip後） |
 
-### 4.1 Vite設定
-```typescript
-// vite.config.ts
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    open: true
-  }
-})
-```
+## 5. セキュリティ要件
 
-### 4.2 TypeScript設定
-- strict mode有効
-- ESNext target
-- React JSX transform
-
-## 5. パフォーマンス最適化
-
-### 5.1 画像
-- 適切なサイズの画像を使用
-- 遅延読み込み（lazy loading）
-
-### 5.2 バンドル
-- コード分割（React.lazy）
-- Tree shaking
-
-## 6. セキュリティ考慮事項
-
-### 6.1 XSS対策
-- Reactの自動エスケープを活用
-- dangerouslySetInnerHTMLは使用しない
-
-### 6.2 入力バリデーション
-- 数量入力の範囲チェック
-- 不正な値の排除
+- XSS対策: Reactのエスケープ機構を活用。dangerouslySetInnerHTMLは使用しない
+- 入力バリデーション: 数量入力に対する最小値（1）・最大値（在庫数）のバリデーション
+- 依存パッケージ: 既知の脆弱性がないことを確認

@@ -1,154 +1,133 @@
 # 開発ガイドライン
 
-## 1. コーディング規約
+## 1. TypeScript規約
 
-### 1.1 TypeScript
+### 1.1 基本ルール
 - `strict` モードを有効にする
-- `any` 型の使用を避ける
-- 明示的な型注釈を推奨
+- `any` 型の使用を禁止する
+- 明示的な型注釈を推奨（型推論が十分な場合は省略可）
 
-```typescript
-// Good
-const addToCart = (product: Product, quantity: number): void => {
-  // ...
-};
-
-// Avoid
-const addToCart = (product: any, quantity) => {
-  // ...
-};
-```
-
-### 1.2 React
-- 関数コンポーネントを使用
-- Propsにはインターフェースを定義
-- 副作用はuseEffectで管理
+### 1.2 型定義
+- 共通の型は `src/types/index.ts` で定義
+- コンポーネントのPropsは `interface` で定義し、`Props` サフィックスを付ける
 
 ```typescript
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product) => void;
 }
+```
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
-  return (
-    // ...
-  );
+## 2. React規約
+
+### 2.1 コンポーネント
+- 関数コンポーネントのみ使用（クラスコンポーネントは使用しない）
+- `React.FC` は使用しない（Props型を引数に直接指定）
+
+```typescript
+// Good
+const ProductCard = ({ product }: ProductCardProps) => {
+  return <div>{product.name}</div>;
+};
+
+// Bad
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  return <div>{product.name}</div>;
 };
 ```
 
-## 2. 命名規則
+### 2.2 フック
+- フックの呼び出しはコンポーネントのトップレベルで行う
+- カスタムフックは `use` 接頭辞を付ける
 
-### 2.1 変数・関数
-- camelCaseを使用
-- 動詞から始める（関数の場合）
-
-```typescript
-const productName = 'りんごジャム';
-const handleClick = () => {};
-const isLoading = true;
-```
-
-### 2.2 コンポーネント
-- PascalCaseを使用
-- 名詞または名詞句
+### 2.3 イベントハンドラ
+- `handle` 接頭辞を使用する
 
 ```typescript
-export const ProductCard = () => {};
-export const ShoppingCart = () => {};
+const handleClick = () => { ... };
+const handleSubmit = (e: React.FormEvent) => { ... };
 ```
 
-### 2.3 定数
-- UPPER_SNAKE_CASEを使用
+## 3. 命名規則
+
+### 3.1 変数・関数
+
+| 対象 | 規則 | 例 |
+|------|------|-----|
+| 変数 | camelCase | `cartItems`, `totalPrice` |
+| 関数 | camelCase | `addToCart`, `formatPrice` |
+| 定数 | UPPER_SNAKE_CASE | `MAX_QUANTITY`, `DEFAULT_CATEGORY` |
+| コンポーネント | PascalCase | `ProductCard`, `CartSummary` |
+| 型/Interface | PascalCase | `Product`, `CartItem` |
+| Context | PascalCase | `CartContext`, `FavoritesContext` |
+
+### 3.2 CSSクラス
+- Tailwind CSSのユーティリティクラスを使用
+- カスタムクラスが必要な場合はケバブケース
+
+## 4. スタイリング規約
+
+### 4.1 Tailwind CSS クラスの順序
+
+1. レイアウト（`flex`, `grid`, `block`）
+2. 位置（`relative`, `absolute`）
+3. サイズ（`w-`, `h-`, `max-w-`）
+4. 余白（`m-`, `p-`）
+5. 背景（`bg-`）
+6. ボーダー（`border-`, `rounded-`）
+7. テキスト（`text-`, `font-`）
+8. その他
+
+### 4.2 レスポンシブ
 
 ```typescript
-const MAX_QUANTITY = 99;
-const API_BASE_URL = '/api';
+// モバイルファーストで記述
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 ```
 
-## 3. スタイリング規約（Tailwind CSS）
+## 5. Git規約
 
-### 3.1 クラスの順序
-1. レイアウト（display, position）
-2. ボックスモデル（width, height, padding, margin）
-3. タイポグラフィ（font, text）
-4. ビジュアル（background, border, shadow）
-5. その他（transition, animation）
+### 5.1 ブランチ命名
 
-```tsx
-<div className="flex items-center w-full p-4 text-lg font-bold bg-white border rounded-lg shadow-md transition-all">
+```
+[YYYYMMDD]-[開発タイトル]
 ```
 
-### 3.2 レスポンシブ対応
-- モバイルファーストで記述
-- ブレークポイント: sm(640px), md(768px), lg(1024px)
+例: `20260219-initial-implementation`
 
-```tsx
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-```
+### 5.2 コミットメッセージ
 
-## 4. Git規約
-
-### 4.1 ブランチ命名
-- `feature/` - 新機能
-- `fix/` - バグ修正
-- `refactor/` - リファクタリング
-
-### 4.2 コミットメッセージ
 ```
 <type>: <subject>
 
-<body>
+<body>（任意）
 ```
 
 **type:**
-- feat: 新機能
-- fix: バグ修正
-- docs: ドキュメント
-- style: フォーマット
-- refactor: リファクタリング
-- test: テスト
-- chore: その他
+- `feat`: 新機能
+- `fix`: バグ修正
+- `docs`: ドキュメント
+- `style`: フォーマット変更（機能に影響なし）
+- `refactor`: リファクタリング
+- `test`: テスト
+- `chore`: ビルドプロセスやツールの変更
 
-## 5. ファイル構成
+### 5.3 コミット単位
+- 論理的に意味のある単位でコミット
+- 1コミットに複数の無関係な変更を含めない
 
-### 5.1 コンポーネントファイル
-```typescript
-// 1. インポート
-import { useState } from 'react';
-import { Product } from '../types';
+## 6. コード品質チェック
 
-// 2. 型定義
-interface Props {
-  product: Product;
-}
+### 6.1 開発完了時の必須チェック
 
-// 3. コンポーネント本体
-export const ProductCard: React.FC<Props> = ({ product }) => {
-  // state
-  const [isHovered, setIsHovered] = useState(false);
-
-  // handlers
-  const handleClick = () => {};
-
-  // render
-  return (
-    <div>...</div>
-  );
-};
-```
-
-## 6. 品質チェック
-
-### 6.1 開発完了時
 ```bash
 npm run lint          # ESLintチェック
-npx tsc --noEmit      # 型チェック
+npx tsc --noEmit      # TypeScript型チェック
 npm run build         # ビルド確認
 ```
 
-### 6.2 コードレビュー観点
-- 型安全性
-- コンポーネントの責務分離
-- パフォーマンス（不要な再レンダリング）
-- アクセシビリティ
+### 6.2 チェックリスト
+- [ ] ESLintエラーがゼロ
+- [ ] TypeScript型エラーがゼロ
+- [ ] ビルドが成功する
+- [ ] レスポンシブ表示が正しい
+- [ ] 全画面の遷移が正常
