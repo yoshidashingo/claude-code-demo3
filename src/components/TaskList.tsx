@@ -13,7 +13,7 @@ export function TaskList() {
   }
 
   return (
-    <ul className="divide-y divide-gray-100">
+    <ul>
       {filteredTasks.map((task) => (
         <TaskItem key={task.id} task={task} />
       ))}

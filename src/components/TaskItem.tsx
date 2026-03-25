@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { ja } from 'date-fns/locale';
 import { useTaskContext } from '../hooks/useTaskContext';
 import type { Task } from '../types/task';
 
@@ -27,6 +29,8 @@ export function TaskItem({ task }: TaskItemProps) {
     const trimmed = editTitle.trim();
     if (trimmed) {
       editTask(task.id, trimmed);
+    } else {
+      setEditTitle(task.title);
     }
     setIsEditing(false);
   };
@@ -40,12 +44,18 @@ export function TaskItem({ task }: TaskItemProps) {
     }
   };
 
+  const createdAgo = formatDistanceToNow(new Date(task.createdAt), {
+    addSuffix: true,
+    locale: ja,
+  });
+
   return (
     <li className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 group hover:bg-gray-50 transition-colors">
       <input
         type="checkbox"
         checked={task.completed}
         onChange={() => toggleTask(task.id)}
+        aria-label={`「${task.title}」を${task.completed ? '未完了' : '完了'}にする`}
         className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
       />
 
@@ -57,17 +67,22 @@ export function TaskItem({ task }: TaskItemProps) {
           onChange={(e) => setEditTitle(e.target.value)}
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
+          maxLength={200}
           className="flex-1 px-2 py-1 border border-blue-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       ) : (
-        <span
-          onDoubleClick={handleDoubleClick}
-          className={`flex-1 cursor-pointer select-none ${
-            task.completed ? 'line-through text-gray-400' : 'text-gray-800'
-          }`}
-        >
-          {task.title}
-        </span>
+        <div className="flex-1 min-w-0">
+          <span
+            onDoubleClick={handleDoubleClick}
+            title="ダブルクリックで編集"
+            className={`block cursor-pointer select-none ${
+              task.completed ? 'line-through text-gray-400' : 'text-gray-800'
+            }`}
+          >
+            {task.title}
+          </span>
+          <span className="text-xs text-gray-400">{createdAgo}</span>
+        </div>
       )}
 
       <button

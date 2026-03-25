@@ -20,6 +20,7 @@ export function TaskInput() {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="新しいタスクを入力..."
+        maxLength={200}
         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       <button

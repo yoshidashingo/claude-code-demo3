@@ -11,6 +11,7 @@ export type TaskContextType = {
   deleteTask: (id: string) => void;
   editTask: (id: string, title: string) => void;
   setFilter: (filter: FilterType) => void;
+  clearCompleted: () => void;
 };
 
 export const TaskContext = createContext<TaskContextType | null>(null);

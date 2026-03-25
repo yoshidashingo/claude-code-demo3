@@ -9,7 +9,8 @@ type TaskAction =
   | { type: 'ADD_TASK'; title: string }
   | { type: 'TOGGLE_TASK'; id: string }
   | { type: 'DELETE_TASK'; id: string }
-  | { type: 'EDIT_TASK'; id: string; title: string };
+  | { type: 'EDIT_TASK'; id: string; title: string }
+  | { type: 'CLEAR_COMPLETED' };
 
 type TaskState = {
   tasks: Task[];
@@ -48,6 +49,11 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
         tasks: state.tasks.map((task) =>
           task.id === action.id ? { ...task, title: action.title } : task
         ),
+      };
+    case 'CLEAR_COMPLETED':
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => !task.completed),
       };
     default:
       return state;
@@ -95,6 +101,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     deleteTask: (id: string) => dispatch({ type: 'DELETE_TASK', id }),
     editTask: (id: string, title: string) => dispatch({ type: 'EDIT_TASK', id, title }),
     setFilter,
+    clearCompleted: () => dispatch({ type: 'CLEAR_COMPLETED' }),
   };
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
