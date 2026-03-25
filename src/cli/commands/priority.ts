@@ -15,8 +15,7 @@ export function createPriorityCommand(): Command {
         const manager = new TaskManager(storage)
 
         // Support partial ID matching
-        const tasks = await manager.getTasks()
-        const task = tasks.find(t => t.id.startsWith(id))
+        const task = await manager.findTaskByPartialId(id)
 
         if (!task) {
           console.error(colors.error(`タスクが見つかりません: ${id}`))

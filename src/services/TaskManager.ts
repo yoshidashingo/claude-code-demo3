@@ -100,6 +100,16 @@ export class TaskManager {
   }
 
   /**
+   * Find a task by partial ID (prefix match)
+   * @param id Full or partial task ID
+   * @returns Task or null if not found
+   */
+  async findTaskByPartialId(id: string): Promise<Task | null> {
+    const tasks = await this.storage.loadTasks()
+    return tasks.find(task => task.id.startsWith(id)) || null
+  }
+
+  /**
    * Update a task
    * @param id Task ID
    * @param updates Partial task data to update
@@ -232,23 +242,19 @@ export class TaskManager {
    */
   async getStats(): Promise<TaskStats> {
     const tasks = await this.storage.loadTasks()
+    const now = new Date()
 
-    const byStatus = {
-      todo: tasks.filter(task => task.status === 'todo').length,
-      'in-progress': tasks.filter(task => task.status === 'in-progress').length,
-      done: tasks.filter(task => task.status === 'done').length,
+    const byStatus = { todo: 0, 'in-progress': 0, done: 0 }
+    const byPriority = { high: 0, medium: 0, low: 0 }
+    let overdue = 0
+
+    for (const task of tasks) {
+      byStatus[task.status]++
+      byPriority[task.priority]++
+      if (task.dueDate && new Date(task.dueDate) < now) {
+        overdue++
+      }
     }
-
-    const byPriority = {
-      high: tasks.filter(task => task.priority === 'high').length,
-      medium: tasks.filter(task => task.priority === 'medium').length,
-      low: tasks.filter(task => task.priority === 'low').length,
-    }
-
-    const overdue = tasks.filter(task => {
-      if (!task.dueDate) return false
-      return new Date(task.dueDate) < new Date()
-    }).length
 
     return {
       total: tasks.length,

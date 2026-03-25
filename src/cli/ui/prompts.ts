@@ -7,6 +7,25 @@ import {
   TASK_PRIORITY_LABELS,
 } from '../../constants/index.js'
 
+const priorityChoices = [
+  { name: TASK_PRIORITY_LABELS.high, value: TASK_PRIORITY.HIGH },
+  { name: TASK_PRIORITY_LABELS.medium, value: TASK_PRIORITY.MEDIUM },
+  { name: TASK_PRIORITY_LABELS.low, value: TASK_PRIORITY.LOW },
+]
+
+function validateDateInput(input: string): boolean | string {
+  if (!input) return true
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+  if (!dateRegex.test(input)) {
+    return 'YYYY-MM-DD形式で入力してください (例: 2024-12-31)'
+  }
+  const date = new Date(input)
+  if (isNaN(date.getTime())) {
+    return '有効な日付を入力してください'
+  }
+  return true
+}
+
 /**
  * Prompt for task creation
  */
@@ -46,29 +65,14 @@ export async function promptTaskCreate(): Promise<{
       type: 'list',
       name: 'priority',
       message: '優先度を選択してください:',
-      choices: [
-        { name: TASK_PRIORITY_LABELS.high, value: TASK_PRIORITY.HIGH },
-        { name: TASK_PRIORITY_LABELS.medium, value: TASK_PRIORITY.MEDIUM },
-        { name: TASK_PRIORITY_LABELS.low, value: TASK_PRIORITY.LOW },
-      ],
+      choices: priorityChoices,
       default: TASK_PRIORITY.MEDIUM,
     },
     {
       type: 'input',
       name: 'dueDate',
       message: '期限を入力してください (YYYY-MM-DD形式、省略可):',
-      validate: (input: string) => {
-        if (!input) return true
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-        if (!dateRegex.test(input)) {
-          return 'YYYY-MM-DD形式で入力してください (例: 2024-12-31)'
-        }
-        const date = new Date(input)
-        if (isNaN(date.getTime())) {
-          return '有効な日付を入力してください'
-        }
-        return true
-      },
+      validate: validateDateInput,
     },
   ])
 
@@ -121,11 +125,7 @@ export async function promptTaskEdit(task: Task): Promise<{
       type: 'list',
       name: 'priority',
       message: '優先度:',
-      choices: [
-        { name: TASK_PRIORITY_LABELS.high, value: TASK_PRIORITY.HIGH },
-        { name: TASK_PRIORITY_LABELS.medium, value: TASK_PRIORITY.MEDIUM },
-        { name: TASK_PRIORITY_LABELS.low, value: TASK_PRIORITY.LOW },
-      ],
+      choices: priorityChoices,
       default: task.priority,
     },
     {
@@ -133,18 +133,7 @@ export async function promptTaskEdit(task: Task): Promise<{
       name: 'dueDate',
       message: '期限 (YYYY-MM-DD形式):',
       default: task.dueDate || '',
-      validate: (input: string) => {
-        if (!input) return true
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-        if (!dateRegex.test(input)) {
-          return 'YYYY-MM-DD形式で入力してください (例: 2024-12-31)'
-        }
-        const date = new Date(input)
-        if (isNaN(date.getTime())) {
-          return '有効な日付を入力してください'
-        }
-        return true
-      },
+      validate: validateDateInput,
     },
   ])
 
@@ -186,11 +175,7 @@ export async function promptPrioritySelect(currentPriority: TaskPriority): Promi
       type: 'list',
       name: 'priority',
       message: '新しい優先度を選択してください:',
-      choices: [
-        { name: TASK_PRIORITY_LABELS.high, value: TASK_PRIORITY.HIGH },
-        { name: TASK_PRIORITY_LABELS.medium, value: TASK_PRIORITY.MEDIUM },
-        { name: TASK_PRIORITY_LABELS.low, value: TASK_PRIORITY.LOW },
-      ],
+      choices: priorityChoices,
       default: currentPriority,
     },
   ])

@@ -2,7 +2,7 @@ import { Command } from 'commander'
 import { FileStorage } from '../../data/index.js'
 import { TaskManager } from '../../services/index.js'
 import { colors, createTaskTable } from '../ui/index.js'
-import { TaskStatus, TaskPriority } from '../../types/index.js'
+import { validateStatus, validatePriority } from '../../utils/index.js'
 
 export function createListCommand(): Command {
   const command = new Command('list')
@@ -16,8 +16,8 @@ export function createListCommand(): Command {
         const manager = new TaskManager(storage)
 
         const filter = {
-          status: options.status as TaskStatus | undefined,
-          priority: options.priority as TaskPriority | undefined,
+          status: options.status ? validateStatus(options.status) : undefined,
+          priority: options.priority ? validatePriority(options.priority) : undefined,
           search: options.search,
         }
 

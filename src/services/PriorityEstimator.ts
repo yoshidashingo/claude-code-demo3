@@ -2,6 +2,15 @@ import { Task, TaskPriority, PriorityScore, TaskStatus } from '../types/index.js
 import { daysUntilDue } from '../utils/index.js'
 import { differenceInDays } from 'date-fns'
 
+// Scoring weights (must sum to 1.0)
+const WEIGHT_DUE_DATE = 0.5
+const WEIGHT_AGE = 0.2
+const WEIGHT_STATUS = 0.3
+
+// Priority thresholds
+const THRESHOLD_HIGH = 70
+const THRESHOLD_MEDIUM = 40
+
 export class PriorityEstimator {
   /**
    * Estimate priority for a task
@@ -103,7 +112,7 @@ export class PriorityEstimator {
    * Calculate weighted total score
    */
   private calculateTotalScore(dueDateScore: number, ageScore: number, statusScore: number): number {
-    const weighted = dueDateScore * 0.5 + ageScore * 0.2 + statusScore * 0.3
+    const weighted = dueDateScore * WEIGHT_DUE_DATE + ageScore * WEIGHT_AGE + statusScore * WEIGHT_STATUS
     return Math.round(weighted)
   }
 
@@ -111,11 +120,11 @@ export class PriorityEstimator {
    * Convert total score to priority level
    */
   private scoreToPriority(score: number): TaskPriority {
-    if (score >= 70) {
+    if (score >= THRESHOLD_HIGH) {
       return 'high'
     }
 
-    if (score >= 40) {
+    if (score >= THRESHOLD_MEDIUM) {
       return 'medium'
     }
 
