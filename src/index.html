@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タスクマネージャー</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+    .container { max-width: 600px; margin: 40px auto; padding: 0 16px; }
+    h1 { text-align: center; margin-bottom: 24px; font-size: 1.8rem; }
+    .input-area { display: flex; gap: 8px; margin-bottom: 16px; }
+    #task-input { flex: 1; padding: 10px 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+    #task-input:focus { outline: none; border-color: #4a90d9; }
+    #add-btn { padding: 10px 20px; font-size: 1rem; background: #4a90d9; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    #add-btn:hover { background: #357abd; }
+    .filters { display: flex; gap: 8px; margin-bottom: 16px; }
+    .filters button { padding: 6px 14px; font-size: 0.9rem; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
+    .filters button.active { background: #4a90d9; color: #fff; border-color: #4a90d9; }
+    #task-list { list-style: none; }
+    #task-list li { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fff; border-radius: 6px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    #task-list li input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+    .task-title { flex: 1; cursor: default; word-break: break-word; }
+    .task-title.completed { text-decoration: line-through; color: #999; }
+    .edit-input { flex: 1; padding: 4px 8px; font-size: 1rem; border: 1px solid #4a90d9; border-radius: 4px; }
+    .delete-btn { background: none; border: none; color: #e74c3c; font-size: 1.2rem; cursor: pointer; padding: 0 4px; }
+    .delete-btn:hover { color: #c0392b; }
+    #task-counter { text-align: center; margin-top: 16px; color: #666; font-size: 0.9rem; }
+
+    @media (max-width: 767px) {
+      .container { margin: 16px auto; }
+      h1 { font-size: 1.4rem; }
+      .input-area { flex-direction: column; }
+      #add-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>タスクマネージャー</h1>
+    <div class="input-area">
+      <input type="text" id="task-input" placeholder="新しいタスクを入力...">
+      <button id="add-btn">追加</button>
+    </div>
+    <div class="filters">
+      <button data-filter="all" class="active">すべて</button>
+      <button data-filter="active">未完了</button>
+      <button data-filter="completed">完了済み</button>
+    </div>
+    <ul id="task-list"></ul>
+    <p id="task-counter">0件の未完了タスク</p>
+  </div>
+
+  <script>
+    (function() {
+      const STORAGE_KEY = 'task-manager-tasks';
+      let tasks = [];
+      let currentFilter = 'all';
+
+      const input = document.getElementById('task-input');
+      const addBtn = document.getElementById('add-btn');
+      const taskList = document.getElementById('task-list');
+      const counter = document.getElementById('task-counter');
+      const filterBtns = document.querySelectorAll('[data-filter]');
+
+      function loadTasks() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (data) {
+          try { tasks = JSON.parse(data); } catch(e) { tasks = []; }
+        }
+      }
+
+      function saveTasks() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      }
+
+      function updateCounter() {
+        const active = tasks.filter(t => !t.completed).length;
+        counter.textContent = active + '件の未完了タスク';
+      }
+
+      function renderTasks() {
+        taskList.innerHTML = '';
+        tasks.forEach(task => {
+          const li = document.createElement('li');
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = task.completed;
+          checkbox.addEventListener('change', () => {
+            task.completed = checkbox.checked;
+            titleSpan.classList.toggle('completed', task.completed);
+            saveTasks();
+            updateCounter();
+            applyFilter();
+          });
+
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'task-title' + (task.completed ? ' completed' : '');
+          titleSpan.textContent = task.title;
+          titleSpan.addEventListener('dblclick', () => startEdit(li, task));
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'delete-btn';
+          deleteBtn.textContent = '✕';
+          deleteBtn.addEventListener('click', () => {
+            tasks = tasks.filter(t => t.id !== task.id);
+            saveTasks();
+            renderTasks();
+            updateCounter();
+          });
+
+          li.appendChild(checkbox);
+          li.appendChild(titleSpan);
+          li.appendChild(deleteBtn);
+          taskList.appendChild(li);
+        });
+        applyFilter();
+        updateCounter();
+      }
+
+      function startEdit(li, task) {
+        const titleSpan = li.querySelector('.task-title');
+        const editInput = document.createElement('input');
+        editInput.type = 'text';
+        editInput.className = 'edit-input';
+        editInput.value = task.title;
+
+        titleSpan.style.display = 'none';
+        li.insertBefore(editInput, titleSpan.nextSibling);
+        editInput.focus();
+
+        function finishEdit(save) {
+          const newTitle = editInput.value.trim();
+          if (save && newTitle) {
+            task.title = newTitle;
+            titleSpan.textContent = newTitle;
+            saveTasks();
+          }
+          editInput.remove();
+          titleSpan.style.display = '';
+        }
+
+        editInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') finishEdit(true);
+          if (e.key === 'Escape') finishEdit(false);
+        });
+
+        editInput.addEventListener('blur', () => finishEdit(true));
+      }
+
+      function applyFilter() {
+        const items = taskList.querySelectorAll('li');
+        items.forEach((li, i) => {
+          const task = tasks[i];
+          if (!task) return;
+          if (currentFilter === 'all') li.style.display = '';
+          else if (currentFilter === 'active') li.style.display = task.completed ? 'none' : '';
+          else if (currentFilter === 'completed') li.style.display = task.completed ? '' : 'none';
+        });
+      }
+
+      function addTask() {
+        const title = input.value.trim();
+        if (!title) return;
+        tasks.push({
+          id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+          title: title,
+          completed: false,
+          createdAt: new Date().toISOString(),
+        });
+        input.value = '';
+        saveTasks();
+        renderTasks();
+      }
+
+      addBtn.addEventListener('click', addTask);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') addTask();
+      });
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentFilter = btn.dataset.filter;
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          applyFilter();
+        });
+      });
+
+      loadTasks();
+      renderTasks();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "claude-code-demo3",
+  "version": "1.0.0",
+  "description": "シンプルで直感的なタスク管理アプリケーション。",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoshidashingo/claude-code-demo3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/yoshidashingo/claude-code-demo3/issues"
+  },
+  "homepage": "https://github.com/yoshidashingo/claude-code-demo3#readme",
+  "devDependencies": {
+    "jsdom": "^29.0.1",
+    "vitest": "^4.1.1"
+  }
+}
